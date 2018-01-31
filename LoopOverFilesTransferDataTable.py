@@ -21,7 +21,7 @@ InitialRow = 2
 #os.chdir('/Users/Gesetze/documents/Data_Science_Internship/Files_To_Transfer')
 
 # **** NEED TO ALWAYS CHANGE DIRECTORY
-os.chdir('/Volumes/Elements/Lexi_Organized_NIBIN_Leads/Lexi_Organized_NIBIN') # Mac format
+# os.chdir('NIBIN_template.docx') # Mac format
 #print(os.getcwd())
 
 # for wbLoad, same as the top, make sure the format excel file is already created
@@ -30,20 +30,20 @@ os.chdir('/Volumes/Elements/Lexi_Organized_NIBIN_Leads/Lexi_Organized_NIBIN') # 
 # wbLoad needs a template excel file 
 # Below for test files
 #wbLoad = '/Users/Gesetze/documents/Data_Science_Internship/NLN.xlsx' # Mac format
-wbLoad = 'F:\\NIBN_Leads\\Lead_TEST_DocumentVersion3.xlsx' # Windows format
+wbLoad = 'test.xlsx' # Windows format
 
 
 total_files = 0
 total_files_errors = 0.0
 file_errors_list = []
 # change os.listdir depending on where the file is 
-for filename in os.listdir('/Volumes/Elements/Lexi_Organized_NIBIN_Leads/Lexi_Organized_NIBIN'): # Mac format
+for filename in os.listdir('.'): # Mac format
 #for filename in os.listdir('F:\\NIBN_Leads'): # Windows format
     if filename.endswith('.docx') and '~' not in filename:
         
         try:             
         # workbook to load
-            executeFile = transferDataTableMultipleFilesFixTables.transferData(filename, InitialRow, wbLoad)
+            executeFile = transferDataTableMultipleFiles.transferData(filename, InitialRow, wbLoad)
             # print(executeFile)
             wbLoad = executeFile[1]
             InitialRow = InitialRow + int(executeFile[0])
