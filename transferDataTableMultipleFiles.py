@@ -18,9 +18,6 @@ def transferData(filename, NumberOfRows, wbLoad):
     
         # Uncomment (remove # in front of line) below if you desire to know the 
         # number of tables in the word file
-        # print(len(document.tables))
-            
-     
         # Data will be a list of rows represented as dictionaries or tuples
         # containing each row's data.
     data = []
@@ -28,7 +25,7 @@ def transferData(filename, NumberOfRows, wbLoad):
     allText = ''
     everyText = ''
     allTextList = []
-    count = 0 
+    count = 0
     for table in document.tables: #document.tables are the tables objects
         #allText = ''
         keys = None
@@ -43,10 +40,14 @@ def transferData(filename, NumberOfRows, wbLoad):
                     allTextList.append(cell.text)
                     for word in allTextList:
                         allText = allText + word
-                    table_list.append(allText)
+                    # print("\n--->allText", allText, "\n")
+                    # print("\n", allText, "\n")
+                    print(everyText)
+                    table_list.append(everyText)
                     allText = ''
                     allTextList = []
                     count = 0
+                    everyText = ''
                     #print(allText)
                 else:
                     allTextList.append(cell.text)
@@ -80,9 +81,7 @@ def transferData(filename, NumberOfRows, wbLoad):
     dateRegex = re.compile(r'\d\d(-|/)?\d\d(-|/)?\d\d|\d(-|/)?\d(-|/)?\d\d|\d\d(-|/)?\d(-|/)?\d\d|\d(-|/)?\d\d(-|/)?\d\d')
     nibinRegex = re.compile(r'\d\d-\d\d\d')
     
-    
-
-    WSP_case_number_Regex = re.compile(r'(WSP case number)(.*)(Case Number)')
+    WSP_case_number_Regex = re.compile(r'(WSP Case Number)(.*)(Case Number)')
     Case_Number_regex = re.compile(r'(Case Number)(.*)(Exhibit Number)')
     Exhibit_regex = re.compile(r'(Exhibit Number)(.*)(Offense)')
     Offense_regex = re.compile(r'(Offense)(.*)(Evidence)')
@@ -90,8 +89,8 @@ def transferData(filename, NumberOfRows, wbLoad):
     Date_regex = re.compile(r'(Date)(.*)(Location)')
     Location_regex = re.compile(r'(Location)(.*)(Agency)')
     Agency_regex = re.compile(r'(Agency)(.*)(Assigned Detective)')
-    AD_regex = re.compile(r'(Assigned Detective)(.*)(Contact info)')
-    Contact_regex = re.compile(r'(Contact info)(.*)')
+    AD_regex = re.compile(r'(Assigned Detective)(.*)(Contact Info)')
+    Contact_regex = re.compile(r'(Contact Info)(.*)(EVENT#)')
 
     
     # For finall method (everyTExt)
@@ -171,6 +170,8 @@ def transferData(filename, NumberOfRows, wbLoad):
             #cellObj.value = sorted_data[value]
             value += 1
     """
+
+    # print(table_list[0])
     for i in range(len(table_list)):
         # those two don't work because they are not in the table,
         # other code for mo and moNibin is above
@@ -186,6 +187,7 @@ def transferData(filename, NumberOfRows, wbLoad):
         mo_Agency = Agency_regex.search(table_list[i])
         mo_AD = AD_regex.search(table_list[i])
         mo_Contact = Contact_regex.search(table_list[i])
+
         # then input in
         regex_list = [mo, moNibin, mo_WSP, mo_Case, mo_Exhibit, mo_Offense,
                       mo_Evidence, mo_Date, mo_Location, mo_Agency, mo_AD,
@@ -204,8 +206,12 @@ def transferData(filename, NumberOfRows, wbLoad):
         
         columnNumber = 3
         for regex in range(2, len(regex_list)):
+            # print(regex_list[regex])
             if regex_list[regex] != None and regex_list[regex]!= mo and regex_list[regex] != moNibin:
-                sheet.cell(row = NumberOfRows + i, column = columnNumber, value = regex_list[regex].group(2))
+                value = regex_list[regex].group(2)
+                if(regex == 3):
+                    value = re.sub(r".*(Case Number)", "", value)
+                sheet.cell(row = NumberOfRows + i, column = columnNumber, value = value)
             else:
                 sheet.cell(row = NumberOfRows + i, column = columnNumber, value = '')
 
@@ -217,7 +223,7 @@ def transferData(filename, NumberOfRows, wbLoad):
     
     # Directory format should be changed according to OS
     # The one below works for Macs    
-    wb.save('/Users/Gesetze/documents/Data_Science_Internship/KCNIBNRealTest3.xlsx') 
-    tupe1 = (len(table_list), '/Users/Gesetze/documents/Data_Science_Internship/KCNIBNRealTest3.xlsx')
+    wb.save('KCNIBNRealTest3.xlsx') 
+    tupe1 = (len(table_list), 'KCNIBNRealTest3.xlsx')
     return tupe1
         
